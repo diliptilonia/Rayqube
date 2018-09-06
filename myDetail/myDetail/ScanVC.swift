@@ -25,11 +25,6 @@
             present(imagePicker, animated: true, completion: nil)
         }
         
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            
-            self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        }
         override func viewDidLoad() {
             super.viewDidLoad()
             
@@ -61,6 +56,9 @@
             var st = UIStoryboard(name: "Main", bundle: nil)
             var vc = st.instantiateViewController(withIdentifier: "profationVC") as! profationVC
             navigationController?.pushViewController(vc, animated: true)
+        }
+        @IBAction func backButton(_ sender: UIButton) {
+            backButton(identifire: "ViewController")
         }
 }
 

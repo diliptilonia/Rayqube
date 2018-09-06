@@ -12,49 +12,28 @@ import Alamofire
 
 
 class formVC: UIViewController {
-    
-//    var listItem1 = ["Item1", "Item2", "Item3"]
-//
-//    var textfieldf: UITextField?
-//    var activeData = ["Dilip", "Ajay", "Vikas"]
-//    let picker = UIPickerView()
 
-    
-    @IBOutlet weak var nameTF: UITextField!
+ @IBOutlet weak var nameTF: UITextField!
     @IBOutlet weak var emailTF: UITextField!
     @IBOutlet weak var mobileNo: UITextField!
     
     var timer = Timer()
     var counter = 0
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        picker.dataSource = self
-//        picker.delegate = self
-//        textfield1.delegate = self
-//        textfield1.inputView = picker
-//        showPicker()
-        
-        
+
         hideKeyBoard()
  }
  
     
     @IBAction func submitButton(_ sender: UIButton) {
    
-//        let parameters = ["name": nameTF.text, "email": emailTF.text]
-//        
-//        let urlstring = ""
-//        Alamofire.request("https://diliptilonia.000webhostapp.com/signup.php", method: .post, parameters: parameters, encoding: JSONEncoding.default)
-//            .responseJSON { response in
-//                print(response)
-//                
-//        }
-        
-
-        
-        var st = UIStoryboard(name: "Main", bundle: nil)
+  var st = UIStoryboard(name: "Main", bundle: nil)
         var vc = st.instantiateViewController(withIdentifier: "profationVC") as! profationVC
         vc.email = emailTF.text ?? "name"
         vc.name = nameTF.text ?? "name"
@@ -70,7 +49,12 @@ class formVC: UIViewController {
         hud.show(in: self.view)
     }
 
+    @IBAction func backButton(_ sender: UIButton) {
+       
+        self.navigationController?.popViewController(animated: true)
 
+    }
+    
 }
 
 extension UIViewController {
@@ -81,5 +65,6 @@ extension UIViewController {
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
+
 
 }

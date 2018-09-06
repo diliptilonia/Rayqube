@@ -12,12 +12,14 @@ import Alamofire
 class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
     @IBOutlet weak var theTextfield: UITextField!
-    let myPickerData = [String](arrayLiteral: "Peter", "Jane", "Paul", "Mary", "Kevin", "Lucy")
+    let myPickerData = [String](arrayLiteral: "Distributor", "Sub distributor", "Wholesale", "Retailer / tobacconist", "Consumer", "Other")
     var name: String = ""
     var email: String = ""
     var mobileNo: String = ""
 
-    
+    override func viewWillAppear(_ animated: Bool) {
+        hideNavi()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,5 +89,8 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         dismissKeyboard()
     }
     
-
+    @IBAction func backButton(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
 }
