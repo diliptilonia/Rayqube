@@ -35,7 +35,7 @@ class formVC: UIViewController {
    
   var st = UIStoryboard(name: "Main", bundle: nil)
         var vc = st.instantiateViewController(withIdentifier: "profationVC") as! profationVC
-        vc.email = emailTF.text ?? "name"
+        vc.email = emailTF.text ?? "email"
         vc.name = nameTF.text ?? "name"
         vc.mobileNo = mobileNo.text ?? "mobile"
         navigationController?.pushViewController(vc, animated: true)
