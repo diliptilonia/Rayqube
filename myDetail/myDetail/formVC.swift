@@ -38,6 +38,7 @@ class formVC: UIViewController {
         vc.email = emailTF.text ?? "email"
         vc.name = nameTF.text ?? "name"
         vc.mobileNo = mobileNo.text ?? "mobile"
+        vc.comingFrom = "Form"
         navigationController?.pushViewController(vc, animated: true)
         
     }

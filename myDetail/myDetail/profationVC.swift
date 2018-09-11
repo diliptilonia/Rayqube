@@ -7,23 +7,55 @@
 //
 
 import UIKit
+import CoreData
 import Alamofire
+import UICheckbox_Swift
 
-class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
-
+class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource  {
+    var people: [NSManagedObject] = []
+    @IBOutlet weak var checkButton1: UICheckbox!
+    
+    @IBOutlet weak var yourimageView: UIImageView!
+    var myImage: UIImage?
+    
     @IBOutlet weak var theTextfield: UITextField!
     let myPickerData = [String](arrayLiteral: "Distributor", "Sub distributor", "Wholesale", "Retailer / tobacconist", "Consumer", "Other")
     var name: String = ""
     var email: String = ""
     var mobileNo: String = ""
+    var comingFrom: String = ""
+    var industory: String = ""
+    
 
     override func viewWillAppear(_ animated: Bool) {
         hideNavi()
+        UserDefaults.standard.set(id + 1, forKey: "ID")
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Person")
+        
+        do {
+            people = try managedContext.fetch(fetchRequest)
+            print("this is row data")
+            print(people)
+            for persondata in people {
+                print(persondata.value(forKey: "personName") ?? "No Name")
+            }
+            
+            print("this is after row ")
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+    
         let thePicker = UIPickerView()
         thePicker.delegate = self
         theTextfield.inputView = thePicker
@@ -51,38 +83,126 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     
     
     @IBAction func submitButton(_ sender: UIButton) {
-        
+        print(industory)
+        incrementIntegerForKey(key: "ID")
+        print(UserDefaults.standard.integer(forKey: "ID"))
+        if comingFrom == "Form" {
+            let parameters = [
+                "deviceID": deviceID,
+                "ID": id,
+                "name": String(self.name),
+                "email": self.email,
+                "mobileNo": self.mobileNo,
+                "industory": industory,
+                "dataType": self.comingFrom,
+                
+                ] as [String : Any]
+            print("THis is id \(UserDefaults.standard.integer(forKey: "ID"))")
+//            industory = self.theTextfield.text!
+            let url = "https://diliptilonia.000webhostapp.com/signup.php"
+            
+            Alamofire.request(url, method: .post, parameters: parameters, encoding: URLEncoding.default).responseString { response in
+                print(response.result.value)
+                switch response.result {
+                case .success:
+                    if let value = response.result.value {
+                        print(value)
+                    }
+                case .failure(let error):
+                    print(error)
+                }
+            }
+            save()
+        } else {
+            incrementIntegerForKey(key: "ID")
+            print(UserDefaults.standard.integer(forKey: "ID"))
 
-        let url = URL(string: "https://diliptilonia.000webhostapp.com/signup.php")!
-        var request = URLRequest(url: url)
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        let postString = "name=\(name),\(email),\(mobileNo)"
-        request.httpBody = postString.data(using: .utf8)
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data, error == nil else {                                                 // check for fundamental networking error
-                print("error=\(error)")
-                return
-            }
-            
-            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {           // check for http errors
-                print("statusCode should be 200, but is \(httpStatus.statusCode)")
-                print("response = \(response)")
-            }
-            
-            let responseString = String(data: data, encoding: .utf8)
-            print("responseString = \(responseString)")
+            print("coming from image ")
+            let params = [
+                "deviceID": deviceID,
+                "ID": id,
+                "industory": industory,
+                "dataType": self.comingFrom,
+//                "image": self.myImage
+                ] as [String : Any]
+            print(UserDefaults.standard.integer(forKey: "ID"))
+//            Alamofire.upload(multipartFormData:
+//                {
+//                    (multipartFormData) in
+//                    multipartFormData.append(self.myImage!.jpegData(compressionQuality: 0.75)!, withName: "image", fileName: "file.jpeg", mimeType: "image/jpeg")
+//
+////                    let imageData = myImage.jpegData(compressionQuality: 0.75)
+//
+//                    for (key, value) in params
+//                    {
+//                        multipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key)
+//                    }
+//            }, to:"https://diliptilonia.000webhostapp.com/signup.php",headers:nil)
+//            { (result) in
+//                switch result {
+//                case .success(let upload,_,_ ):
+//                    upload.uploadProgress(closure: { (progress) in
+//                        //Print progress
+//                    })
+//                    upload.responseString
+//                        { response in
+//                            //print response.result
+//                            if response.result.value != nil
+//                            {
+//                                print(response.result.value)
+////                                let dict : = response.result.value
+////                                let status = dict.value(forKey: "status")as! String
+////                                if status=="1"
+////                                {
+////                                    print("DATA UPLOAD SUCCESSFULLY")
+////                                }
+//                            }
+//                    }
+//                case .failure(let encodingError):
+//                    break
+//                }
+//            }
         }
-        task.resume()
-
         
+    
         var st = UIStoryboard(name: "Main", bundle: nil)
         var vc = st.instantiateViewController(withIdentifier: "thanksVC") as! thanksVC
         navigationController?.pushViewController(vc, animated: true)
 
     }
     
-
+    func save() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        let entity = NSEntityDescription.entity(forEntityName: "Person",
+                                                in: managedContext)!
+        
+        let person = NSManagedObject(entity: entity,
+                                     insertInto: managedContext)
+        
+        person.setValue(name, forKey: "personName")
+        person.setValue(email, forKey: "personEmail")
+        person.setValue(mobileNo, forKey: "personMobile")
+        person.setValue(industory, forKey: "personIndustory")
+        person.setValue(deviceID, forKey: "deviceID")
+        person.setValue(id, forKey: "id")
+        person.setValue(comingFrom, forKey: "dataType")
+        
+        do {
+            try managedContext.save()
+            people.append(person)
+            print("Saved Succesfully")
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+    }
+    
+  
+    
 
     func showPicker() {
         let toolBar = UIToolbar()
@@ -103,8 +223,53 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         dismissKeyboard()
     }
     
+    
+   
     @IBAction func backButton(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+}
+
+
+extension profationVC {
+    @IBAction func checkButton(_ sender: UICheckbox) {
+       addString(indus: "Distribotor", sender: sender)
+    }
+    @IBAction func checkButton2(_ sender: UICheckbox) {
+        addString(indus: "Sub distributor", sender: sender)
+    }
+    @IBAction func checkButton3(_ sender: UICheckbox) {
+        addString(indus: "Wholesale", sender: sender)
+    }
+    @IBAction func checkButton4(_ sender: UICheckbox) {
+        addString(indus: "Retailer / tobacconist", sender: sender)
+    }
+    @IBAction func checkButton5(_ sender: UICheckbox) {
+        addString(indus: "Consumer", sender: sender)
+    }
+    @IBAction func checkButton6(_ sender: UICheckbox) {
+        addString(indus: "Other", sender: sender)
+    }
+   
+   
+//
+//    "Distributor", "Sub distributor", "Wholesale", "Retailer / tobacconist", "Consumer", "Other")
+    
+    func addString(indus: String, sender: UICheckbox) {
+        if sender.isSelected == true {
+            print("Selected")
+            industory = indus + industory
+        } else {
+            if let range = industory.range(of: indus) {
+                industory.removeSubrange(range)
+            }        }
+    }
+    
+    func incrementIntegerForKey(key:String) {
+        let defaults = UserDefaults.standard
+        let inti = defaults.integer(forKey: "ID")
+        defaults.set(inti + 1, forKey: "ID")
     }
     
 }

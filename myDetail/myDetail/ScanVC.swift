@@ -53,9 +53,15 @@
         }
         
         @IBAction func nextButton(_ sender: UIButton) {
+            
             var st = UIStoryboard(name: "Main", bundle: nil)
             var vc = st.instantiateViewController(withIdentifier: "profationVC") as! profationVC
+            vc.comingFrom = "Scan"
             navigationController?.pushViewController(vc, animated: true)
+            
+//            var st = UIStoryboard(name: "Main", bundle: nil)
+//            var vc = st.instantiateViewController(withIdentifier: "profationVC") as! profationVC
+//            navigationController?.pushViewController(vc, animated: true)
         }
         @IBAction func backButton(_ sender: UIButton) {
             backButton(identifire: "ViewController")
