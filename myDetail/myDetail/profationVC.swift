@@ -16,18 +16,23 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     @IBOutlet weak var checkButton1: UICheckbox!
     
     @IBOutlet weak var yourimageView: UIImageView!
-    var myImage: UIImage?
+    var myImage = UIImage()
     
+    var localPath: String?
+
     @IBOutlet weak var theTextfield: UITextField!
-    let myPickerData = [String](arrayLiteral: "Distributor", "Sub distributor", "Wholesale", "Retailer / tobacconist", "Consumer", "Other")
+    let myPickerData = [String](arrayLiteral: "Distributor", "Sub distributor", "Wholesale", "Retailer / Tobacconist", "Consumer", "Other")
     var name: String = ""
     var email: String = ""
     var mobileNo: String = ""
     var comingFrom: String = ""
     var industory: String = ""
+    var imageToSave: UIImage = UIImage(named: "jp")!
     
 
     override func viewWillAppear(_ animated: Bool) {
+        theTextfield.isHidden = true
+        yourimageView.image = imageToSave
         hideNavi()
         UserDefaults.standard.set(id + 1, forKey: "ID")
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -87,6 +92,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         incrementIntegerForKey(key: "ID")
         print(UserDefaults.standard.integer(forKey: "ID"))
         if comingFrom == "Form" {
+            
             let parameters = [
                 "deviceID": deviceID,
                 "ID": id,
@@ -116,62 +122,58 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         } else {
             incrementIntegerForKey(key: "ID")
             print(UserDefaults.standard.integer(forKey: "ID"))
-
+            print(UserDefaults.standard.integer(forKey: "ID"))
             print("coming from image ")
-            let params = [
+            
+            
+           
+            var image = UIImage()
+            image = imageToSave
+            var convertedData =  convertImageToBase64(image: image)
+            print("THis is the converted image in strnig \(convertedData)")
+            
+            let parameters = [
                 "deviceID": deviceID,
                 "ID": id,
                 "industory": industory,
                 "dataType": self.comingFrom,
-//                "image": self.myImage
+                "image": convertedData
                 ] as [String : Any]
-            print(UserDefaults.standard.integer(forKey: "ID"))
-//            Alamofire.upload(multipartFormData:
-//                {
-//                    (multipartFormData) in
-//                    multipartFormData.append(self.myImage!.jpegData(compressionQuality: 0.75)!, withName: "image", fileName: "file.jpeg", mimeType: "image/jpeg")
-//
-////                    let imageData = myImage.jpegData(compressionQuality: 0.75)
-//
-//                    for (key, value) in params
-//                    {
-//                        multipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key)
-//                    }
-//            }, to:"https://diliptilonia.000webhostapp.com/signup.php",headers:nil)
-//            { (result) in
-//                switch result {
-//                case .success(let upload,_,_ ):
-//                    upload.uploadProgress(closure: { (progress) in
-//                        //Print progress
-//                    })
-//                    upload.responseString
-//                        { response in
-//                            //print response.result
-//                            if response.result.value != nil
-//                            {
-//                                print(response.result.value)
-////                                let dict : = response.result.value
-////                                let status = dict.value(forKey: "status")as! String
-////                                if status=="1"
-////                                {
-////                                    print("DATA UPLOAD SUCCESSFULLY")
-////                                }
-//                            }
-//                    }
-//                case .failure(let encodingError):
-//                    break
-//                }
-//            }
+            print("THis is id \(UserDefaults.standard.integer(forKey: "ID"))")
+            //            industory = self.theTextfield.text!
+            let url = "https://diliptilonia.000webhostapp.com/signup.php"
+            
+            Alamofire.request(url, method: .post, parameters: parameters, encoding: URLEncoding.default).responseString { response in
+                print(response.result.value)
+                switch response.result {
+                case .success:
+                    if let value = response.result.value {
+                        print(value)
+                    }
+                case .failure(let error):
+                    print(error)
+                }
+            }
+
+            
+            
+            
+            
+            save()
+
+            
         }
+        
         
     
         var st = UIStoryboard(name: "Main", bundle: nil)
         var vc = st.instantiateViewController(withIdentifier: "thanksVC") as! thanksVC
         navigationController?.pushViewController(vc, animated: true)
-
     }
     
     func save() {
+        print("Reaching in save")
+        var imgData = imageToSave.jpegData(compressionQuality: 0.50)!
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
@@ -191,6 +193,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         person.setValue(deviceID, forKey: "deviceID")
         person.setValue(id, forKey: "id")
         person.setValue(comingFrom, forKey: "dataType")
+        person.setValue(imgData, forKey: "image")
         
         do {
             try managedContext.save()
@@ -201,7 +204,28 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         }
     }
     
-  
+    // convert image to base 64 or via versa
+    
+    func convertImageToBase64(image: UIImage) -> String {
+        
+        var imageData = image.jpegData(compressionQuality: 0.50)?.base64EncodedData()
+        let base64String = imageData?.base64EncodedString()
+        
+        return base64String!
+        
+    }
+    
+    func convertBase64ToImage(base64String: String) -> UIImage {
+        
+        let decodedData = NSData(base64Encoded: base64String, options: NSData.Base64DecodingOptions(rawValue: 0) )
+        
+        var decodedimage = UIImage(data: decodedData! as Data)
+        
+        return decodedimage!
+        
+    }
+    
+    
     
 
     func showPicker() {
@@ -273,3 +297,193 @@ extension profationVC {
     }
     
 }
+
+
+
+//            let params = [
+//                "deviceID": deviceID,
+//                "ID": id,
+//                "industory": industory,
+//                "dataType": self.comingFrom,
+////                "image": self.myImage
+//                ] as [String : Any]
+//            Alamofire.upload(multipartFormData:
+//                {
+//                    (multipartFormData) in
+//                    multipartFormData.append(self.myImage!.jpegData(compressionQuality: 0.75)!, withName: "image", fileName: "file.jpeg", mimeType: "image/jpeg")
+//
+////                    let imageData = myImage.jpegData(compressionQuality: 0.75)
+//
+//                    for (key, value) in params
+//                    {
+//                        multipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key)
+//                    }
+//            }, to:"https://diliptilonia.000webhostapp.com/signup.php",headers:nil)
+//            { (result) in
+//                switch result {
+//                case .success(let upload,_,_ ):
+//                    upload.uploadProgress(closure: { (progress) in
+//                        //Print progress
+//                    })
+//                    upload.responseString
+//                        { response in
+//                            //print response.result
+//                            if response.result.value != nil
+//                            {
+//                                print(response.result.value)
+////                                let dict : = response.result.value
+////                                let status = dict.value(forKey: "status")as! String
+////                                if status=="1"
+////                                {
+////                                    print("DATA UPLOAD SUCCESSFULLY")
+////                                }
+//                            }
+//                    }
+//                case .failure(let encodingError):
+//                    break
+//                }
+//            }
+
+
+//let imageData = image.jpegData(compressionQuality: 0.75)
+
+
+//                        let parameters = [
+//                            "deviceID": deviceID,
+//                            "ID": id,
+//                            "industory": industory,
+//                            "dataType": self.comingFrom,
+//            //                "image": self.myImage
+//                            ] as [String : Any]
+//            let parameters = ["name": rname] //Optional for extra parameter
+
+
+
+//            let parameters = [
+//                "file_name": "swift_file.jpeg"
+//            ]
+//
+//            Alamofire.upload(multipartFormData: { (multipartFormData) in
+//                multipartFormData.append(self.imageToSave.jpegData(compressionQuality: 0.75)!, withName: "photo_path", fileName: "swift_file.jpeg", mimeType: "image/jpeg")
+//                for (key, value) in parameters {
+//                    multipartFormData.append(value.data(using: String.Encoding.utf8)!, withName: key)
+//                }
+//            }, to:"https://diliptilonia.000webhostapp.com/signup.php")
+//            { (result) in
+//                switch result {
+//                case .success(let upload, _, _):
+//
+//                    upload.uploadProgress(closure: { (progress) in
+//                        //Print progress
+//                    })
+//
+//                    upload.responseJSON { response in
+//                        //print response.result
+//                    }
+//
+//                case .failure(let encodingError):
+//                    print("Error in responce")
+//                }
+//            }
+
+
+
+
+
+
+
+
+
+
+
+
+//                        var imgData = imageToSave.jpegData(compressionQuality: 0.50)!
+//
+//            let parameters = [
+//                            "deviceID": deviceID,
+//                            "ID": id,
+//                            "industory": industory,
+//                            "dataType": self.comingFrom,
+//            //                "imgData": imageData ?? "No Image"
+//                            ] as [String : Any]
+//
+//
+//             let imageToUploadURL = Bundle.main.url(forResource: "tree", withExtension: "png")
+//
+//                // Server address (replace this with the address of your own server):
+//                let url = "https://diliptilonia.000webhostapp.com/signup.php2we"
+//
+//                // Use Alamofire to upload the image
+//                Alamofire.upload(
+//                        multipartFormData: { multipartFormData in
+//                            multipartFormData.append(imgData, withName: "image", fileName: "file.jpeg", mimeType: "image/jpeg")
+//                            for (key, val) in parameters {
+//                                                                    multipartFormData.append((val as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key)
+//                                    }
+//                    },
+//                        to: url,
+//                        encodingCompletion: { encodingResult in
+//                            switch encodingResult {
+//                            case .success(let upload, _, _):
+//                                 upload.responseJSON { response in
+//                                    if let jsonResponse = response.result.value as? [String: Any] {
+//                                        print(jsonResponse)
+//                                     }
+//                                }
+//                            case .failure(let encodingError):
+//                                 print(encodingError)
+//                             }
+//                     }
+//                     )
+//
+
+
+
+
+//            var imgData = imageToSave.jpegData(compressionQuality: 0.50)!
+//            let parameters = [
+//                "deviceID": deviceID,
+//                "ID": id,
+//                "industory": industory,
+//                "dataType": self.comingFrom,
+////                "imgData": imageData ?? "No Image"
+//                ] as [String : Any]//Optional for extra parameter
+//
+//                        Alamofire.upload(multipartFormData:
+//                            {
+//                                (multipartFormData) in
+//                                multipartFormData.append(imgData, withName: "image", fileName: "file.jpeg", mimeType: "image/jpeg")
+//
+//            //                    let imageData = myImage.jpegData(compressionQuality: 0.75)
+//
+//                                for (key, value) in parameters
+//                                {
+//                                    multipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key)
+//                                }
+//                        }, to:"https://diliptilonia.000webhostapp.com/signup.php",headers:nil)
+//                        { (result) in
+//                            switch result {
+//                            case .success(let upload,_,_ ):
+//                                upload.uploadProgress(closure: { (progress) in
+//                                    //Print progress
+//                                })
+//                                upload.responseJSON
+//                                    { response in
+//                                        //print response.result
+//                                        if response.result.value != nil
+//                                        {
+//                                            print("WOrking image upload")
+//                                            print(response.result.value)
+//            //                                let dict : = response.result.value
+//            //                                let status = dict.value(forKey: "status")as! String
+//            //                                if status=="1"
+//            //                                {
+//            //                                    print("DATA UPLOAD SUCCESSFULLY")
+//            //                                }
+//                                        }
+//                                }
+//                            case .failure(let encodingError):
+//                            print("DIn't get responce")
+//                            }
+//                        }
+//
