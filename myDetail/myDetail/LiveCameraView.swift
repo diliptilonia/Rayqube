@@ -9,6 +9,8 @@
 import UIKit
 import AVFoundation
 
+//public var customView = UIView()
+
 open class LiveCameraView: UIView {
     
     open var videoGravity = AVLayerVideoGravity.resizeAspect {
@@ -81,6 +83,8 @@ open class LiveCameraView: UIView {
     
     override open func layoutSubviews() {
         camera.previewLayer.frame = bounds
+//        camera.previewLayer.frame = self.customView.bounds
+        
         super.layoutSubviews()
     }
     
