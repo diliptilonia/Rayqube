@@ -19,6 +19,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     var myImage = UIImage()
     
     var localPath: String?
+    var currentValue = Int()
 
     @IBOutlet weak var theTextfield: UITextField!
     let myPickerData = [String](arrayLiteral: "Distributor", "Sub distributor", "Wholesale", "Retailer / Tobacconist", "Consumer", "Other")
@@ -34,27 +35,27 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         theTextfield.isHidden = true
         yourimageView.image = imageToSave
         hideNavi()
-        UserDefaults.standard.set(id + 1, forKey: "ID")
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return
-        }
-        
-        let managedContext = appDelegate.persistentContainer.viewContext
-        
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Person")
-        
-        do {
-            people = try managedContext.fetch(fetchRequest)
-            print("this is row data")
-            print(people)
-            for persondata in people {
-                print(persondata.value(forKey: "personName") ?? "No Name")
-            }
-            
-            print("this is after row ")
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
+//        UserDefaults.standard.set(id + 1, forKey: "ID")
+//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+//            return
+//        }
+//
+//        let managedContext = appDelegate.persistentContainer.viewContext
+//
+//        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Person")
+//
+//        do {
+//            people = try managedContext.fetch(fetchRequest)
+//            print("this is row data")
+//            print(people)
+//            for persondata in people {
+//                print(persondata.value(forKey: "personName") ?? "No Name")
+//            }
+//
+//            print("this is after row ")
+//        } catch let error as NSError {
+//            print("Could not fetch. \(error), \(error.userInfo)")
+//        }
     }
     
     override func viewDidLoad() {
@@ -89,13 +90,21 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     
     @IBAction func submitButton(_ sender: UIButton) {
         print(industory)
-        incrementIntegerForKey(key: "ID")
-        print(UserDefaults.standard.integer(forKey: "ID"))
+//        incrementIntegerForKey(key: "ID")
+        
+        var lastIDValue = UserDefaults.standard.integer(forKey: "ID")
+        print("LastValue \(lastIDValue)")
+        lastIDValue = lastIDValue + 1
+        UserDefaults.standard.set(lastIDValue, forKey: "ID")
+         currentValue = UserDefaults.standard.integer(forKey: "ID")
+        print("CUrrent Value of id \(currentValue)")
+        
+//        print("updatedValue \())
         if comingFrom == "Form" {
             
             let parameters = [
                 "deviceID": deviceID,
-                "ID": id,
+                "ID": currentValue,
                 "name": String(self.name),
                 "email": self.email,
                 "mobileNo": self.mobileNo,
@@ -120,13 +129,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
             }
             save()
         } else {
-            incrementIntegerForKey(key: "ID")
-            print(UserDefaults.standard.integer(forKey: "ID"))
-            print(UserDefaults.standard.integer(forKey: "ID"))
-            print("coming from image ")
-            
-            
-           
+         
             var image = UIImage()
             image = imageToSave
             var convertedData =  convertImageToBase64(image: image)
@@ -134,10 +137,10 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
             
             let parameters = [
                 "deviceID": deviceID,
-                "ID": id,
+                "ID": currentValue,
                 "industory": industory,
                 "dataType": self.comingFrom,
-                "image": convertedData
+                "img": convertedData
                 ] as [String : Any]
             print("THis is id \(UserDefaults.standard.integer(forKey: "ID"))")
             //            industory = self.theTextfield.text!
@@ -191,7 +194,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         person.setValue(mobileNo, forKey: "personMobile")
         person.setValue(industory, forKey: "personIndustory")
         person.setValue(deviceID, forKey: "deviceID")
-        person.setValue(id, forKey: "id")
+        person.setValue(currentValue, forKey: "id")
         person.setValue(comingFrom, forKey: "dataType")
         person.setValue(imgData, forKey: "image")
         
