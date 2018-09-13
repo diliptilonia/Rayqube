@@ -11,7 +11,7 @@ import CoreData
 import Alamofire
 import UICheckbox_Swift
 
-class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource  {
+class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     var people: [NSManagedObject] = []
     @IBOutlet weak var checkButton1: UICheckbox!
     
@@ -32,6 +32,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     
 
     override func viewWillAppear(_ animated: Bool) {
+        yourimageView.isHidden = true
         theTextfield.isHidden = true
         yourimageView.image = imageToSave
         hideNavi()
