@@ -34,7 +34,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     override func viewWillAppear(_ animated: Bool) {
         yourimageView.isHidden = true
         theTextfield.isHidden = true
-        yourimageView.image = imageToSave
+//        yourimageView.image = imageToSave
         hideNavi()
 //        UserDefaults.standard.set(id + 1, forKey: "ID")
 //        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -62,7 +62,13 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     override func viewDidLoad() {
         super.viewDidLoad()
 
-    
+        
+//        var image = UIImage()
+//        image = imageToSave
+//        var convertedData =  convertImageToBase64(image: image)
+//        print("THis is the converted image in strnig \(convertedData)")
+//        var convertedImage: UIImage = convertBase64ToImage(imageString: convertedData)
+//        yourimageView.image = convertedImage
         let thePicker = UIPickerView()
         thePicker.delegate = self
         theTextfield.inputView = thePicker
@@ -115,7 +121,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
                 ] as [String : Any]
             print("THis is id \(UserDefaults.standard.integer(forKey: "ID"))")
 //            industory = self.theTextfield.text!
-            let url = "https://diliptilonia.000webhostapp.com/signup.php"
+            let url = "http://52.66.132.37/alphacurve/admin/"
             
             Alamofire.request(url, method: .post, parameters: parameters, encoding: URLEncoding.default).responseString { response in
                 print(response.result.value)
@@ -135,6 +141,8 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
             image = imageToSave
             var convertedData =  convertImageToBase64(image: image)
             print("THis is the converted image in strnig \(convertedData)")
+//            yourimageView.image = convertBase64ToImage(base64String: convertedData)
+        
             
             let parameters = [
                 "deviceID": deviceID,
@@ -145,7 +153,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
                 ] as [String : Any]
             print("THis is id \(UserDefaults.standard.integer(forKey: "ID"))")
             //            industory = self.theTextfield.text!
-            let url = "https://diliptilonia.000webhostapp.com/signup.php"
+            let url = "http://52.66.132.37/alphacurve/admin/"
             
             Alamofire.request(url, method: .post, parameters: parameters, encoding: URLEncoding.default).responseString { response in
                 print(response.result.value)
@@ -219,17 +227,20 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         
     }
     
-    func convertBase64ToImage(base64String: String) -> UIImage {
-        
-        let decodedData = NSData(base64Encoded: base64String, options: NSData.Base64DecodingOptions(rawValue: 0) )
-        
-        var decodedimage = UIImage(data: decodedData! as Data)
-        
-        return decodedimage!
-        
-    }
+//    func convertBase64ToImage(base64String: String) -> UIImage {
+//
+//        let decodedData = NSData(base64Encoded: base64String, options: NSData.Base64DecodingOptions(rawValue: 0) )
+//
+//        var decodedimage = UIImage(data: decodedData! as Data)
+//
+//        return decodedimage!
+//
+//    }
     
-    
+//    func convertBase64ToImage(imageString: String) -> UIImage {
+//        let imageData = Data(base64Encoded: imageString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)!
+//        return UIImage(data: imageData)!
+//    }
     
 
     func showPicker() {
