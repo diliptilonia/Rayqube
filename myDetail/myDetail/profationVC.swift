@@ -191,7 +191,21 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     func save() {
         print("Reaching in save")
         // var imgData = UIImageJPEGRepresentation(imageToSave, 0.50)!
-        var imgData = imageToSave.jpegData(compressionQuality: 0.50)!
+//        var imgData = imageToSave.jpegData(compressionQuality: 0.50)!
+        
+        //            image = UIImage(named: "test.jpeg")!
+        //            var convertedData =  convertImageToBase64(image: image)
+        //            print("THis is the converted image in strnig \(convertedData)")
+        //            yourimageView.image = convertBase64ToImage(base64String: convertedData)
+        var image = UIImage()
+        image = imageToSave
+        var imgData = image.jpegData(compressionQuality: 0.50)!
+        let imageStr = imgData.base64EncodedString(options: .lineLength64Characters) ?? ""
+        print(imageStr)
+        //            let imageData: Data? = UIImageJPEGRepresentation(get, 0.4)
+        //            print(imageStr)
+        
+        
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
@@ -211,7 +225,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         person.setValue(deviceID, forKey: "deviceID")
         person.setValue(currentValue, forKey: "id")
         person.setValue(comingFrom, forKey: "dataType")
-        person.setValue(imgData, forKey: "image")
+        person.setValue(imageStr, forKey: "image")
         
         do {
             try managedContext.save()
