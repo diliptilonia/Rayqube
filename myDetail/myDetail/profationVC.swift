@@ -121,7 +121,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
                 ] as [String : Any]
             print("THis is id \(UserDefaults.standard.integer(forKey: "ID"))")
 //            industory = self.theTextfield.text!
-            let url = "http://52.66.132.37/alphacurve/admin/"
+            let url = "Http://52.66.132.37/alphacurve/signup.php"
             
             Alamofire.request(url, method: .post, parameters: parameters, encoding: URLEncoding.default).responseString { response in
                 print(response.result.value)
@@ -138,22 +138,27 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         } else {
          
             var image = UIImage()
+//            image = UIImage(named: "test.jpeg")!
             image = imageToSave
-            var convertedData =  convertImageToBase64(image: image)
-            print("THis is the converted image in strnig \(convertedData)")
+//            var convertedData =  convertImageToBase64(image: image)
+//            print("THis is the converted image in strnig \(convertedData)")
 //            yourimageView.image = convertBase64ToImage(base64String: convertedData)
+            
+            var imgData = image.jpegData(compressionQuality: 0.50)!
+//            let imageData: Data? = UIImageJPEGRepresentation(get, 0.4)
+            let imageStr = imgData.base64EncodedString(options: .lineLength64Characters) ?? ""
+//            print(imageStr)
         
             
             let parameters = [
-                "deviceID": deviceID,
                 "ID": currentValue,
                 "industory": industory,
                 "dataType": self.comingFrom,
-                "img": convertedData
+                "imageData": imageStr
                 ] as [String : Any]
             print("THis is id \(UserDefaults.standard.integer(forKey: "ID"))")
             //            industory = self.theTextfield.text!
-            let url = "http://52.66.132.37/alphacurve/admin/"
+            let url = "Http://52.66.132.37/alphacurve/signup.php"
             
             Alamofire.request(url, method: .post, parameters: parameters, encoding: URLEncoding.default).responseString { response in
                 print(response.result.value)
@@ -185,6 +190,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     
     func save() {
         print("Reaching in save")
+        // var imgData = UIImageJPEGRepresentation(imageToSave, 0.50)!
         var imgData = imageToSave.jpegData(compressionQuality: 0.50)!
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
