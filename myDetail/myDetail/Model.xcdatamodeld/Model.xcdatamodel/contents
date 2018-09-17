@@ -4,7 +4,7 @@
         <attribute name="dataType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="deviceID" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="image" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="personEmail" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="personIndustory" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="personMobile" optional="YES" attributeType="String" syncable="YES"/>

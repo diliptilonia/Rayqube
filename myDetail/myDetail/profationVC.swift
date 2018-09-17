@@ -20,7 +20,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     
     var localPath: String?
     var currentValue = Int()
-
+    
     @IBOutlet weak var theTextfield: UITextField!
     let myPickerData = [String](arrayLiteral: "Distributor", "Sub distributor", "Wholesale", "Retailer / Tobacconist", "Consumer", "Other")
     var name: String = ""
@@ -30,52 +30,52 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     var industory: String = ""
     var imageToSave: UIImage = UIImage(named: "jp")!
     
-
+    
     override func viewWillAppear(_ animated: Bool) {
         yourimageView.isHidden = true
         theTextfield.isHidden = true
-//        yourimageView.image = imageToSave
+        //        yourimageView.image = imageToSave
         hideNavi()
-//        UserDefaults.standard.set(id + 1, forKey: "ID")
-//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-//            return
-//        }
-//
-//        let managedContext = appDelegate.persistentContainer.viewContext
-//
-//        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Person")
-//
-//        do {
-//            people = try managedContext.fetch(fetchRequest)
-//            print("this is row data")
-//            print(people)
-//            for persondata in people {
-//                print(persondata.value(forKey: "personName") ?? "No Name")
-//            }
-//
-//            print("this is after row ")
-//        } catch let error as NSError {
-//            print("Could not fetch. \(error), \(error.userInfo)")
-//        }
+        //        UserDefaults.standard.set(id + 1, forKey: "ID")
+        //        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+        //            return
+        //        }
+        //
+        //        let managedContext = appDelegate.persistentContainer.viewContext
+        //
+        //        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Person")
+        //
+        //        do {
+        //            people = try managedContext.fetch(fetchRequest)
+        //            print("this is row data")
+        //            print(people)
+        //            for persondata in people {
+        //                print(persondata.value(forKey: "personName") ?? "No Name")
+        //            }
+        //
+        //            print("this is after row ")
+        //        } catch let error as NSError {
+        //            print("Could not fetch. \(error), \(error.userInfo)")
+        //        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
-//        var image = UIImage()
-//        image = imageToSave
-//        var convertedData =  convertImageToBase64(image: image)
-//        print("THis is the converted image in strnig \(convertedData)")
-//        var convertedImage: UIImage = convertBase64ToImage(imageString: convertedData)
-//        yourimageView.image = convertedImage
+        
+        //        var image = UIImage()
+        //        image = imageToSave
+        //        var convertedData =  convertImageToBase64(image: image)
+        //        print("THis is the converted image in strnig \(convertedData)")
+        //        var convertedImage: UIImage = convertBase64ToImage(imageString: convertedData)
+        //        yourimageView.image = convertedImage
         let thePicker = UIPickerView()
         thePicker.delegate = self
         theTextfield.inputView = thePicker
         showPicker()
         hideKeyBoard()
         print("\(name) \(email) \(mobileNo)")
-
+        
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -97,16 +97,16 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     
     @IBAction func submitButton(_ sender: UIButton) {
         print(industory)
-//        incrementIntegerForKey(key: "ID")
+        //        incrementIntegerForKey(key: "ID")
         
         var lastIDValue = UserDefaults.standard.integer(forKey: "ID")
         print("LastValue \(lastIDValue)")
         lastIDValue = lastIDValue + 1
         UserDefaults.standard.set(lastIDValue, forKey: "ID")
-         currentValue = UserDefaults.standard.integer(forKey: "ID")
+        currentValue = UserDefaults.standard.integer(forKey: "ID")
         print("CUrrent Value of id \(currentValue)")
         
-//        print("updatedValue \())
+        //        print("updatedValue \())
         if comingFrom == "Form" {
             
             let parameters = [
@@ -120,7 +120,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
                 
                 ] as [String : Any]
             print("THis is id \(UserDefaults.standard.integer(forKey: "ID"))")
-//            industory = self.theTextfield.text!
+            //            industory = self.theTextfield.text!
             let url = "Http://52.66.132.37/alphacurve/signup.php"
             
             Alamofire.request(url, method: .post, parameters: parameters, encoding: URLEncoding.default).responseString { response in
@@ -136,21 +136,22 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
             }
             save()
         } else {
-         
+            
             var image = UIImage()
-//            image = UIImage(named: "test.jpeg")!
+            //            image = UIImage(named: "test.jpeg")!
             image = imageToSave
-//            var convertedData =  convertImageToBase64(image: image)
-//            print("THis is the converted image in strnig \(convertedData)")
-//            yourimageView.image = convertBase64ToImage(base64String: convertedData)
+            //            var convertedData =  convertImageToBase64(image: image)
+            //            print("THis is the converted image in strnig \(convertedData)")
+            //            yourimageView.image = convertBase64ToImage(base64String: convertedData)
             
             var imgData = image.jpegData(compressionQuality: 0.50)!
-//            let imageData: Data? = UIImageJPEGRepresentation(get, 0.4)
+            //            let imageData: Data? = UIImageJPEGRepresentation(get, 0.4)
             let imageStr = imgData.base64EncodedString(options: .lineLength64Characters) ?? ""
-//            print(imageStr)
-        
+            //            print(imageStr)
+            
             
             let parameters = [
+                "deviceID": deviceID,
                 "ID": currentValue,
                 "industory": industory,
                 "dataType": self.comingFrom,
@@ -171,18 +172,18 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
                     print(error)
                 }
             }
-
+            
             
             
             
             
             save()
-
+            
             
         }
         
         
-    
+        
         var st = UIStoryboard(name: "Main", bundle: nil)
         var vc = st.instantiateViewController(withIdentifier: "thanksVC") as! thanksVC
         navigationController?.pushViewController(vc, animated: true)
@@ -191,21 +192,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
     func save() {
         print("Reaching in save")
         // var imgData = UIImageJPEGRepresentation(imageToSave, 0.50)!
-//        var imgData = imageToSave.jpegData(compressionQuality: 0.50)!
-        
-        //            image = UIImage(named: "test.jpeg")!
-        //            var convertedData =  convertImageToBase64(image: image)
-        //            print("THis is the converted image in strnig \(convertedData)")
-        //            yourimageView.image = convertBase64ToImage(base64String: convertedData)
-        var image = UIImage()
-        image = imageToSave
-        var imgData = image.jpegData(compressionQuality: 0.50)!
-        let imageStr = imgData.base64EncodedString(options: .lineLength64Characters) ?? ""
-        print(imageStr)
-        //            let imageData: Data? = UIImageJPEGRepresentation(get, 0.4)
-        //            print(imageStr)
-        
-        
+        var imgData = imageToSave.jpegData(compressionQuality: 0.50)!
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
@@ -225,7 +212,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         person.setValue(deviceID, forKey: "deviceID")
         person.setValue(currentValue, forKey: "id")
         person.setValue(comingFrom, forKey: "dataType")
-        person.setValue(imageStr, forKey: "image")
+        person.setValue(imgData, forKey: "image")
         
         do {
             try managedContext.save()
@@ -247,22 +234,22 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         
     }
     
-//    func convertBase64ToImage(base64String: String) -> UIImage {
-//
-//        let decodedData = NSData(base64Encoded: base64String, options: NSData.Base64DecodingOptions(rawValue: 0) )
-//
-//        var decodedimage = UIImage(data: decodedData! as Data)
-//
-//        return decodedimage!
-//
-//    }
+    //    func convertBase64ToImage(base64String: String) -> UIImage {
+    //
+    //        let decodedData = NSData(base64Encoded: base64String, options: NSData.Base64DecodingOptions(rawValue: 0) )
+    //
+    //        var decodedimage = UIImage(data: decodedData! as Data)
+    //
+    //        return decodedimage!
+    //
+    //    }
     
-//    func convertBase64ToImage(imageString: String) -> UIImage {
-//        let imageData = Data(base64Encoded: imageString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)!
-//        return UIImage(data: imageData)!
-//    }
+    //    func convertBase64ToImage(imageString: String) -> UIImage {
+    //        let imageData = Data(base64Encoded: imageString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)!
+    //        return UIImage(data: imageData)!
+    //    }
     
-
+    
     func showPicker() {
         let toolBar = UIToolbar()
         toolBar.sizeToFit()
@@ -272,18 +259,18 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
         toolBar.setItems([doneButton, spaceButton, cancel], animated: true)
         theTextfield.inputAccessoryView = toolBar
     }
-
+    
     @objc func doneClicked() {
         self.view.endEditing(true)
     }
-
+    
     @objc func cancelClicked() {
-//        dismiss(animated: true, completion: nil)
+        //        dismiss(animated: true, completion: nil)
         dismissKeyboard()
     }
     
     
-   
+    
     @IBAction func backButton(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
@@ -293,7 +280,7 @@ class profationVC: UIViewController, UIPickerViewDelegate, UIPickerViewDataSourc
 
 extension profationVC {
     @IBAction func checkButton(_ sender: UICheckbox) {
-       addString(indus: "Distribotor", sender: sender)
+        addString(indus: "Distribotor", sender: sender)
     }
     @IBAction func checkButton2(_ sender: UICheckbox) {
         addString(indus: "Sub distributor", sender: sender)
@@ -310,10 +297,10 @@ extension profationVC {
     @IBAction func checkButton6(_ sender: UICheckbox) {
         addString(indus: "Other", sender: sender)
     }
-   
-   
-//
-//    "Distributor", "Sub distributor", "Wholesale", "Retailer / tobacconist", "Consumer", "Other")
+    
+    
+    //
+    //    "Distributor", "Sub distributor", "Wholesale", "Retailer / tobacconist", "Consumer", "Other")
     
     func addString(indus: String, sender: UICheckbox) {
         if sender.isSelected == true {
